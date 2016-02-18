@@ -14,7 +14,7 @@ provides: Mif.Tree.Drag
 
 Mif.Tree.Drag = new Class({
 	
-	Implements: [new Events, new Options],
+	Implements: [Events, Options],
 	
 	Extends: Drag,
 	
@@ -34,7 +34,7 @@ Mif.Tree.Drag = new Class({
 	initialize: function(tree, options){
 		tree.drag = this;
 		this.setOptions(options);
-		$extend(this, {
+		Object.append(this, {
 			tree: tree,
 			snap: this.options.snap,
 			groups: [],
@@ -46,7 +46,7 @@ Mif.Tree.Drag = new Class({
 		
 		this.setDroppables(this.options.droppables);
 		
-		$extend(tree.defaults, {
+		Object.append(tree.defaults, {
 			dropDenied: [],
 			dragDisabled: false
 		});
@@ -63,7 +63,7 @@ Mif.Tree.Drag = new Class({
 		this.element = [this.current, this.target, this.where];
 		this.document = tree.wrapper.getDocument();
 		
-		this.selection = (Browser.Engine.trident) ? 'selectstart' : 'mousedown';
+		this.selection = (Browser.ie) ? 'selectstart' : 'mousedown';
 		
 		this.bound = {
 			start: this.start.bind(this),
@@ -71,7 +71,7 @@ Mif.Tree.Drag = new Class({
 			drag: this.drag.bind(this),
 			stop: this.stop.bind(this),
 			cancel: this.cancel.bind(this),
-			eventStop: $lambda(false),
+			eventStop: Function.from(false),
 			leave: this.leave.bind(this),
 			enter: this.enter.bind(this),
 			keydown: this.keydown.bind(this)
@@ -111,7 +111,7 @@ Mif.Tree.Drag = new Class({
 	},
 	
 	addToGroups: function(groups){
-		groups = $splat(groups);
+		groups = Array.from(groups);
 		this.groups.combine(groups);
 		groups.each(function(group){
 			Mif.Tree.Drag.groups[group]=(Mif.Tree.Drag.groups[group]||[]).include(this);
@@ -119,7 +119,7 @@ Mif.Tree.Drag = new Class({
 	},
 	
 	setDroppables: function(droppables){
-		this.droppables.combine($splat(droppables));
+		this.droppables.combine(Array.from(droppables));
 		this.groups.each(function(group){
 			this.droppables.combine(Mif.Tree.Drag.groups[group]);
 		}, this);
@@ -162,7 +162,7 @@ Mif.Tree.Drag = new Class({
 	onleave: function(){
 		this.tree.unselect();
 		this.clean();
-		$clear(this.scrolling);
+		clearInterval(this.scrolling);
 		this.scrolling = null;
 		this.target = false;
 	},
@@ -182,7 +182,7 @@ Mif.Tree.Drag = new Class({
 	
 	getZone: function(target){//private leave/enter
 		if(!target) return false;
-		var parent = $(target);
+		var parent = document.id(target);
 		do{
 			for(var l = this.droppables.length;l--;){
 				var zone = this.droppables[l];
@@ -228,7 +228,7 @@ Mif.Tree.Drag = new Class({
 			}.periodical(this.options.scrollDelay, this, [sign]);
 		}
 		if(!sign){
-			$clear(this.scrolling);
+			clearInterval(this.scrolling);
 			this.scrolling = null;
 		}
 	},
@@ -240,7 +240,7 @@ Mif.Tree.Drag = new Class({
 
 		var target = this.tree.mouse.target;
 		if(!target) return;
-		this.current = $splat(this.options.startPlace).contains(target) ? this.tree.mouse.node : false;
+		this.current = Array.from(this.options.startPlace).contains(target) ? this.tree.mouse.node : false;
 		if(!this.current || this.current.dragDisabled) {
 			return;
 		}
@@ -298,7 +298,7 @@ Mif.Tree.Drag = new Class({
 	clean: function(){
 		this.pointer.style.width = 0;
 		if(this.openTimer){
-			$clear(this.openTimer);
+			clearTimeout(this.openTimer);
 			this.openTimer = false;
 			this.wrapper.style.cursor = 'inherit';
 			this.wrapper = false;
@@ -309,8 +309,8 @@ Mif.Tree.Drag = new Class({
 		var wrapper = this.current.getDOM('wrapper');
 		var ghost = new Element('span').addClass('mif-tree-ghost');
 		ghost.adopt(Mif.Tree.Draw.node(this.current).getFirst())
-		.injectInside(document.body).addClass('mif-tree-ghost-notAllowed').setStyle('position', 'absolute');
-		new Element('span').set('html',Mif.Tree.Draw.zeroSpace).injectTop(ghost);
+		.inject(document.body,'inside').addClass('mif-tree-ghost-notAllowed').setStyle('position', 'absolute');
+		new Element('span').set('html',Mif.Tree.Draw.zeroSpace).inject(ghost,'top');
 		ghost.getLast().getFirst().className = '';
 		Mif.Tree.Drag.ghost = ghost;
 	},
@@ -442,7 +442,7 @@ Mif.Tree.Drag = new Class({
 	
 	onstop: function(){
 		this.clean();
-		$clear(this.scrolling);
+		clearInterval(this.scrolling);
 	}
 });
 
