@@ -28,12 +28,12 @@ Mif.Tree.KeyNav=new Class({
 	},
 	
 	attach: function(){
-		var event = Browser.Engine.trident || Browser.Engine.webkit ? 'keydown' : 'keypress';
+		var event = Browser.ie || Browser.safari || Browser.chrome ? 'keydown' : 'keypress';
 		document.addEvent(event, this.bound.action);
 	},
 	
 	detach: function(){
-		var event = Browser.Engine.trident || Browser.Engine.webkit ? 'keydown' : 'keypress';
+		var event = Browser.ie || Browser.safari || Browser.chrome ? 'keydown' : 'keypress';
 		document.removeEvent(event, this.bound.action);
 	},
 	
@@ -120,9 +120,10 @@ Mif.Tree.KeyNav=new Class({
 	
 });
 
-Event.Keys.extend({
-	'pgdown': 34,
-	'pgup': 33,
-	'home': 36,
-	'end': 35
+DOMEvent.defineKeys({
+	'34': 'pgdown',
+	'33': 'pgup',
+	'36': 'home',
+	'35': 'end'
 });
+
