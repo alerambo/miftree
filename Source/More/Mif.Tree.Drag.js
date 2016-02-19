@@ -111,7 +111,7 @@ Mif.Tree.Drag = new Class({
 	},
 	
 	addToGroups: function(groups){
-		groups = Array.from(groups);
+		groups = Array.convert(groups);
 		this.groups.combine(groups);
 		groups.each(function(group){
 			Mif.Tree.Drag.groups[group]=(Mif.Tree.Drag.groups[group]||[]).include(this);
@@ -119,7 +119,7 @@ Mif.Tree.Drag = new Class({
 	},
 	
 	setDroppables: function(droppables){
-		this.droppables.combine(Array.from(droppables));
+		this.droppables.combine(Array.convert(droppables));
 		this.groups.each(function(group){
 			this.droppables.combine(Mif.Tree.Drag.groups[group]);
 		}, this);
@@ -240,7 +240,7 @@ Mif.Tree.Drag = new Class({
 
 		var target = this.tree.mouse.target;
 		if(!target) return;
-		this.current = Array.from(this.options.startPlace).contains(target) ? this.tree.mouse.node : false;
+		this.current = Array.convert(this.options.startPlace).contains(target) ? this.tree.mouse.node : false;
 		if(!this.current || this.current.dragDisabled) {
 			return;
 		}
