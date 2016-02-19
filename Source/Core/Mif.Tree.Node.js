@@ -34,7 +34,7 @@ Mif.Tree.Node = new Class({
 	
 	$calculate: function(){
 		Object.append(this, Object.clone(this.tree.defaults));
-		this.type = Array.from(this.type);
+		this.type = Array.convert(this.type);
 		this.type.each(function(type){
 			var props = this.tree.types[type];
 			if(props) Object.append(this, props);
@@ -92,7 +92,7 @@ Mif.Tree.Node = new Class({
 	},
 	
 	recursive: function(fn, args){
-		args=Array.from(args);
+		args=Array.convert(args);
 		if(fn.apply(this, args) !== false){
 			this.children.each(function(node){
 				if(node.recursive(fn, args) === false){
